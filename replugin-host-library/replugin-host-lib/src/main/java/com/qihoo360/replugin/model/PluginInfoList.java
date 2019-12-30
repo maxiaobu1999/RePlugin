@@ -17,8 +17,9 @@
 package com.qihoo360.replugin.model;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
 
 import com.qihoo360.loader2.Constant;
 import com.qihoo360.replugin.helper.LogDebug;

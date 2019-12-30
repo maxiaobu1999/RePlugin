@@ -23,6 +23,7 @@ import com.qihoo360.replugin.gradle.host.creator.FileCreators
 import com.qihoo360.replugin.gradle.host.creator.IFileCreator
 import com.qihoo360.replugin.gradle.host.creator.impl.json.PluginBuiltinJsonCreator
 import com.qihoo360.replugin.gradle.host.handlemanifest.ComponentsGenerator
+import com.qihoo360.replugin.gradle.plugin.AppConstant
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.logging.LogLevel

@@ -19,13 +19,14 @@
  */
 apply plugin: 'com.android.library'
 
+
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    compileSdkVersion 29
+    buildToolsVersion '29.0.2'
 
     defaultConfig {
-        minSdkVersion 9
-        targetSdkVersion 25
+        minSdkVersion 14
+        targetSdkVersion 29
 
         versionCode 2
         versionName version
@@ -42,12 +43,53 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     // 以“占位符”（Provided）的方式来引用support-v4，不会编入AAR
     // 但宿主需要支持Support-v4（至少应支持LocalBroadcastManager）
-    provided 'com.android.support:support-v4:25.2.0'
+//    provided 'com.android.support:support-v4:25.2.0'
 }
 
 project.ext.RP_ARTIFACT_ID = 'replugin-host-lib'
-apply from: '../../rp-publish.gradle'
+//apply from: '../../rp-publish.gradle'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+task sourceJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier "source"
+}
+
+publishing {
+    publications {
+        bar(MavenPublication) {
+            groupId 'com.qihoo360.replugin'
+            artifactId 'replugin-host-lib'
+            version '2.3.3.1'
+            artifact(sourceJar)
+            artifact("$buildDir/outputs/aar/$artifactId-release.aar")
+            println("$buildDir/outputs/aar/$artifactId-release.aar")
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+                //Iterate over the compile dependencies (we don't want the test ones), adding a <dependency> node for each
+                configurations.compile.allDependencies.each {
+                    if(it.group != null && (it.name != null || "unspecified".equals(it.name)) && it.version != null)
+                    {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', it.group)
+                        dependencyNode.appendNode('artifactId', it.name)
+                        dependencyNode.appendNode('version', it.version)
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            // 定义本地maven仓库的地址
+            url uri('/Users/v_maqinglong/Documents/AndroidProject/MaLong/repos')
+        }
+    }
+}
+
