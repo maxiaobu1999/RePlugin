@@ -18,6 +18,7 @@
 package com.qihoo360.replugin.gradle.plugin.manifest;
 
 /**
+ * 接口类
  * @author RePlugin Team
  */
 public interface IManifest {

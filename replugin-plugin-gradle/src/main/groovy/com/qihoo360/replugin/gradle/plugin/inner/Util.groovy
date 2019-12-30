@@ -22,7 +22,7 @@ import com.android.build.api.transform.JarInput
 import com.android.build.api.transform.TransformInput
 import com.google.common.base.Charsets
 import com.google.common.hash.Hashing
-import com.qihoo360.replugin.gradle.compat.ScopeCompat
+import com.qihoo360.replugin.gradle.plugin.compat.ScopeCompat
 import org.apache.commons.io.FileUtils
 import org.gradle.api.Project
 
@@ -30,9 +30,10 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.zip.ZipFile
 
-import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES;
+import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES
 
 /**
+ * 工具类
  * @author RePlugin Team
  */
 public class Util {

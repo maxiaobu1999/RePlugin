@@ -27,6 +27,8 @@ import javassist.expr.ExprEditor
 import javassist.expr.MethodCall
 
 /**
+ * Activity代码注入器
+ * 替换插件中的Activity的继承相关代码 为 replugin-plugin-library 中的XXPluginActivity父类
  * LOADER_ACTIVITY_CHECK_INJECTOR
  *
  * 修改普通的 Activity 为 PluginActivity
@@ -43,19 +45,25 @@ public class LoaderActivityInjector extends BaseInjector {
             'android.app.TabActivity'                 : 'com.qihoo360.replugin.loader.a.PluginTabActivity',
             'android.app.ListActivity'                : 'com.qihoo360.replugin.loader.a.PluginListActivity',
             'android.app.ActivityGroup'               : 'com.qihoo360.replugin.loader.a.PluginActivityGroup',
-            'android.support.v4.app.FragmentActivity' : 'com.qihoo360.replugin.loader.a.PluginFragmentActivity',
-            'android.support.v7.app.AppCompatActivity': 'com.qihoo360.replugin.loader.a.PluginAppCompatActivity',
+            'androidx.fragment.app.FragmentActivity'  : 'com.qihoo360.replugin.loader.a.PluginFragmentActivity',
+            'androidx.appcompat.app.AppCompatActivity': 'com.qihoo360.replugin.loader.a.PluginAppCompatActivity',
             'android.preference.PreferenceActivity'   : 'com.qihoo360.replugin.loader.a.PluginPreferenceActivity',
             'android.app.ExpandableListActivity'      : 'com.qihoo360.replugin.loader.a.PluginExpandableListActivity'
     ]
 
     @Override
     def injectClass(ClassPool pool, String dir, Map config) {
+        // pool = [class path: /Users/v_maqinglong/Documents/AndroidProject/MaLong/subprojects/videocapture/build/intermediates/javac/release/classes:/Users/v_maqinglong/Documents/AndroidProject/MaLong/common/lib_runtime/build/intermediates/runtime_library_classes/release/classes:/Users/v_maqinglong/Documents/AndroidProject/MaLong/common/lib_util/build/intermediates/runtime_library_cl...
+        // Users/v_maqinglong/Documents/AndroidProject/MaLong/subprojects/videocapture/build/intermediates/exploded-aar/4c476879a887f50ba2146f03ff09eb5d0a37e6fd/class
+        // dir = /Users/v_maqinglong/Documents/AndroidProject/MaLong/subprojects/videocapture/build/intermediates/exploded-aar/000b85d5f8d1c1c3582c1d516d6f04a2ab524fbc/class
+
         init()
 
         /* 遍历程序中声明的所有 Activity */
         //每次都new一下，否则多个variant一起构建时只会获取到首个manifest
         new ManifestAPI().getActivities(project, variantDir).each {
+            // it = com.norman.videocapture.MainActivity
+            //  dir = /Users/v_maqinglong/Documents/AndroidProject/MaLong/subprojects/videocapture/buildintermediates/javac/debug/classes
             // 处理没有被忽略的 Activity
             if (!(it in CommonData.ignoredActivities)) {
                 handleActivity(pool, it, dir)
@@ -67,21 +75,24 @@ public class LoaderActivityInjector extends BaseInjector {
      * 处理 Activity
      *
      * @param pool
-     * @param activity Activity 名称
-     * @param classesDir class 文件目录
+     * @param activity Activity 名称 com.norman.videocapture.MainActivity
+     * @param classesDir class 文件目录 /Users/v_maqinglong/Documents/AndroidProject/MaLong/subprojects/videocapture/buildintermediates/javac/debug/classes
      */
     private def handleActivity(ClassPool pool, String activity, String classesDir) {
+        // com.norman.videocapture.VideoCaptureActivity
+        // /Users/v_maqinglong/Documents/AndroidProject/MaLong/subprojects/videocapture/build/intermediatesjavac/debug/classes/com/norman/videocapture/VideoCaptureActivity.class
         def clsFilePath = classesDir + File.separatorChar + activity.replaceAll('\\.', '/') + '.class'
+
         if (!new File(clsFilePath).exists()) {
             return
         }
 
-        println ">>> Handle $activity"
+//        println ">>> Handle $activity"
 
         def stream, ctCls
         try {
             stream = new FileInputStream(clsFilePath)
-            ctCls = pool.makeClass(stream);
+            ctCls = pool.makeClass(stream)
 /*
              // 打印当前 Activity 的所有父类
             CtClass tmpSuper = ctCls.superclass
@@ -91,6 +102,7 @@ public class LoaderActivityInjector extends BaseInjector {
             }
 */
             // ctCls 之前的父类
+            // [public class androidx.fragment.app.FragmentActivity extends anroidx.activity.ComponentActivity
             def originSuperCls = ctCls.superclass
 
             /* 从当前 Activity 往上回溯，直到找到需要替换的 Activity */
@@ -109,8 +121,9 @@ public class LoaderActivityInjector extends BaseInjector {
 
             /* 找到需要替换的 Activity, 修改 Activity 的父类为 LoaderActivity */
             if (superCls != null) {
+                // ctCls.getName() = com.norman.videocapture.VideoCaptureActivity
+                // targetSuperClsName = com.qihoo360.replugin.loader.a.PluginFragmentActivity
                 def targetSuperClsName = loaderActivityRules.get(superCls.name)
-                // println "    ${ctCls.getName()} 的父类 $superCls.name 需要替换为 ${targetSuperClsName}"
                 CtClass targetSuperCls = pool.get(targetSuperClsName)
 
                 if (ctCls.isFrozen()) {
@@ -124,6 +137,7 @@ public class LoaderActivityInjector extends BaseInjector {
                         @Override
                         void edit(MethodCall call) throws CannotCompileException {
                             if (call.isSuper()) {
+                                //  call.getMethodName() = onCreate
                                 if (call.getMethod().getReturnType().getName() == 'void') {
                                     call.replace('{super.' + call.getMethodName() + '($$);}')
                                 } else {
@@ -133,13 +147,12 @@ public class LoaderActivityInjector extends BaseInjector {
                         }
                     })
                 }
-
+                //  CommonData.getClassPath(ctCls.name) = /Users/v_maqinglong/Documents/AndroidProject/MaLong/subprojects/videocapure/build/intermediates/javac/debug/classes
                 ctCls.writeFile(CommonData.getClassPath(ctCls.name))
-                println "    Replace ${ctCls.name}'s SuperClass ${superCls.name} to ${targetSuperCls.name}"
             }
 
         } catch (Throwable t) {
-            println "    [Warning] --> ${t.toString()}"
+            println "    [Warning]LoaderActivityInjector： --> ${t.toString()}"
         } finally {
             if (ctCls != null) {
                 ctCls.detach()
@@ -150,21 +163,25 @@ public class LoaderActivityInjector extends BaseInjector {
         }
     }
 
+    // 不会执行写死了
     def private init() {
         /* 延迟初始化 loaderActivityRules */
         // todo 从配置中读取，而不是写死在代码中
         if (loaderActivityRules == null) {
             def buildSrcPath = project.project(':buildsrc').projectDir.absolutePath
+            println "norman+++ buildSrcPath = ${buildSrcPath} "
             def loaderConfigPath = String.join(File.separator, buildSrcPath, 'res', LOADER_PROP_FILE)
+            println "norman+++ loaderConfigPath = ${loaderConfigPath} "
 
             loaderActivityRules = new Properties()
             new File(loaderConfigPath).withInputStream {
                 loaderActivityRules.load(it)
             }
 
-            println '\n>>> Activity Rules：'
+//            println '\n>>> Activity Rules：'
             loaderActivityRules.each {
-                println it
+                // it = /Users/v_maqinglong/Documents/AndroidProject/MaLong/subprojects/videocapture/build/intermediates/exploded-aar/a2f80ac814910200306870f5a6dfbb0807926f9c/class
+                println "norman+++ it2 = ${it} "
             }
             println()
         }

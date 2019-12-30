@@ -25,6 +25,8 @@ import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
 
 /**
+ * Provider之ContentResolver代码注入器
+ * 替换 插件中的 ContentResolver 调用代码 为 插件库的调用代码
  * @author RePlugin Team
  */
 public class ProviderInjector extends BaseInjector {

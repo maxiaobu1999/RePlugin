@@ -18,6 +18,7 @@
 package com.qihoo360.replugin.gradle.plugin.manifest
 
 /**
+ * Manifest读取工具类
  * @author RePlugin Team
  */
 public class ManifestReader implements IManifest {

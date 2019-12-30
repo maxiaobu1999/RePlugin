@@ -19,7 +19,7 @@ package com.qihoo360.replugin.gradle.plugin
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
-import com.qihoo360.replugin.gradle.compat.VariantCompat
+import com.qihoo360.replugin.gradle.plugin.compat.VariantCompat
 import com.qihoo360.replugin.gradle.plugin.debugger.PluginDebugger
 import com.qihoo360.replugin.gradle.plugin.inner.CommonData
 import com.qihoo360.replugin.gradle.plugin.inner.ReClassTransform
@@ -27,6 +27,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 
 /**
+ * 插件动态编译方案入口
  * @author RePlugin Team
  */
 public class ReClassPlugin implements Plugin<Project> {
@@ -36,14 +37,16 @@ public class ReClassPlugin implements Plugin<Project> {
 
         println "${AppConstant.TAG} Welcome to replugin world ! "
 
-        /* Extensions */
+        // 保存ReClassConfig类的常量配置信息
         project.extensions.create(AppConstant.USER_CONFIG, ReClassConfig)
 
+        // 判断project中是否含有AppPlugin类型插件
         def isApp = project.plugins.hasPlugin(AppPlugin)
         if (isApp) {
 
             def config = project.extensions.getByName(AppConstant.USER_CONFIG)
 
+            // 获取project中的AppExtension类型extension，
             def android = project.extensions.getByType(AppExtension)
 
             def forceStopHostAppTask = null
@@ -51,29 +54,31 @@ public class ReClassPlugin implements Plugin<Project> {
             def restartHostAppTask = null
 
             android.applicationVariants.all { variant ->
+                // 初始化PluginDebugger类实例，主要配置了最终生成的插件应用的文件路径，以及adb文件的路径，是为了后续基于adb命令做push apk到SD卡上做准备。
                 PluginDebugger pluginDebugger = new PluginDebugger(project, config, variant)
 
                 def variantData = variant.variantData
                 def scope = variantData.scope
 
+                // 获取assemble task(即打包apk的task)，后续的task需要依赖此task，比如安装插件的task，
+                // 肯定要等到assemble task打包生成apk后，才能去执行。
                 def assembleTask = VariantCompat.getAssembleTask(variant)
 
+                // 【rpInstallPluginDebug】安装插件
                 def installPluginTaskName = scope.getTaskName(AppConstant.TASK_INSTALL_PLUGIN, "")
                 def installPluginTask = project.task(installPluginTaskName)
-
                 installPluginTask.doLast {
-                    pluginDebugger.startHostApp()
-                    pluginDebugger.uninstall()
-                    pluginDebugger.forceStopHostApp()
-                    pluginDebugger.startHostApp()
-                    pluginDebugger.install()
+                    pluginDebugger.startHostApp() // 启动宿主
+                    pluginDebugger.uninstall() // 卸载插件
+                    pluginDebugger.forceStopHostApp()// 强制停止宿主
+                    pluginDebugger.startHostApp()// 启动宿主
+                    pluginDebugger.install() // 安装插件
                 }
                 installPluginTask.group = AppConstant.TASKS_GROUP
 
-
+                // 【rpUninstallPluginDebug】卸载插件
                 def uninstallPluginTaskName = scope.getTaskName(AppConstant.TASK_UNINSTALL_PLUGIN, "")
                 def uninstallPluginTask = project.task(uninstallPluginTaskName)
-
                 uninstallPluginTask.doLast {
                     //generate json
                     pluginDebugger.uninstall()
@@ -114,7 +119,9 @@ public class ReClassPlugin implements Plugin<Project> {
                     installPluginTask.dependsOn assembleTask
                 }
 
+                // 【rpRunPluginDebug】
                 def runPluginTaskName = scope.getTaskName(AppConstant.TASK_RUN_PLUGIN, "")
+//                println "norman+++ runPluginTaskName = ${runPluginTaskName} "
                 def runPluginTask = project.task(runPluginTaskName)
                 runPluginTask.doLast {
                     pluginDebugger.run()
@@ -130,10 +137,12 @@ public class ReClassPlugin implements Plugin<Project> {
                 installAndRunPluginTask.dependsOn installPluginTask
             }
 
+            // null
             CommonData.appPackage = android.defaultConfig.applicationId
 
-            println ">>> APP_PACKAGE " + CommonData.appPackage
+//            println ">>> APP_PACKAGE " + CommonData.appPackage
 
+            // 动态编译方案，修改activity基类等
             def transform = new ReClassTransform(project)
             // 将 transform 注册到 android
             android.registerTransform(transform)

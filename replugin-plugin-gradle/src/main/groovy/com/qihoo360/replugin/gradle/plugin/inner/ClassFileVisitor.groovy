@@ -20,9 +20,10 @@ package com.qihoo360.replugin.gradle.plugin.inner
 import java.nio.file.FileVisitResult
 import java.nio.file.Path
 import java.nio.file.SimpleFileVisitor
-import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.BasicFileAttributes
 
 /**
+ * 类文件遍历类
  * @author RePlugin Team
  */
 public class ClassFileVisitor extends SimpleFileVisitor<Path> {

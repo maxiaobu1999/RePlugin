@@ -20,6 +20,7 @@ package com.qihoo360.replugin.gradle.plugin.injector
 import org.gradle.api.Project
 
 /**
+ * 注入器基类
  * @author RePlugin Team
  */
 public abstract class BaseInjector implements IClassInjector {

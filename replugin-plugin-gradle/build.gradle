@@ -22,12 +22,14 @@ apply plugin: 'maven-publish'
 //apply from: 'config.gradle'
 
 repositories {
+    google()
     jcenter()
     mavenCentral()
 }
 
 buildscript {
     repositories {
+        google()
         jcenter()
         mavenCentral()
     }
@@ -57,7 +59,7 @@ sourceSets {
 }
 
 dependencies {
-    compile 'com.android.tools.build:gradle:2.1.3'
+    compile 'com.android.tools.build:gradle:3.5.0'
     compile 'org.json:json:20160212'
     compile 'org.codehaus.groovy:groovy:2.4.7'
     compile 'com.squareup:javapoet:1.5.1'
@@ -121,4 +123,24 @@ publishing {
 }
 
 project.ext.RP_ARTIFACT_ID = 'replugin-plugin-gradle'
-apply from: '../rp-publish.gradle'
+//apply from: '../rp-publish.gradle'
+publishing {
+    publications {
+        // com.qihoo360.replugin:replugin-host-gradle
+        mavenJava(MavenPublication) {
+            groupId 'com.qihoo360.replugin'
+            artifactId 'replugin-plugin-gradle'
+            version '2.3.3.1'
+            //工件和运行时依赖关系取自Java插件添加的“java”组件。
+//            from components.java
+
+        }
+    }
+    repositories {
+        maven {
+            // 本地
+            url uri('/Users/v_maqinglong/Documents/AndroidProject/MaLong/repos')
+        }
+
+    }
+}

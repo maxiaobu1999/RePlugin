@@ -25,6 +25,8 @@ import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
 
 /**
+ * GetIdentifier 方法注入器
+ * 替换 插件中的 Resource.getIdentifier 调用代码的参数 为 动态适配的参数
  * @author RePlugin Team
  */
 public class GetIdentifierInjector extends BaseInjector {

@@ -23,6 +23,7 @@ import javassist.expr.ExprEditor
 import javassist.expr.MethodCall
 
 /**
+ * javassist 允许修改方法里的某个表达式，此类为替换 getIdentifier 方法中表达式的实现类
  * @author RePlugin Team
  */
 public class GetIdentifierExprEditor extends ExprEditor {

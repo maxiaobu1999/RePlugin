@@ -19,10 +19,13 @@ package com.qihoo360.replugin.gradle.plugin.manifest
 
 import org.gradle.api.GradleException
 import org.gradle.api.Project
+import org.gradle.api.internal.file.DefaultFilePropertyFactory
+import org.gradle.api.provider.Provider
 
 import java.util.regex.Pattern
 
 /**
+ * 操作Manifest的API类
  * @author RePlugin Team
  */
 public class ManifestAPI {
@@ -30,6 +33,8 @@ public class ManifestAPI {
     def IManifest sManifestAPIImpl
 
     def getActivities(Project project, String variantDir) {
+        //  variantDir = debug
+
         if (sManifestAPIImpl == null) {
             sManifestAPIImpl = new ManifestReader(manifestPath(project, variantDir))
         }
@@ -42,15 +47,15 @@ public class ManifestAPI {
     def static manifestPath(Project project, String variantDir) {
         // Compatible with path separators for window and Linux, and fit split param based on 'Pattern.quote'
         def variantDirArray = variantDir.split(Pattern.quote(File.separator))
+        // variantName = Debug
         String variantName = ""
         variantDirArray.each {
             //首字母大写进行拼接
             variantName += it.capitalize()
         }
-        println ">>> variantName:${variantName}"
-
         //获取processManifestTask
         def processManifestTask = project.tasks.getByName("process${variantName}Manifest")
+        // processManifestTask = task ':subprojects:videocapture:processDebugManifest'
 
         //如果processManifestTask存在的话
         //transform的task目前能保证在processManifestTask之后执行
@@ -63,18 +68,20 @@ public class ManifestAPI {
             try {
                 manifestOutputFile = processManifestTask.getManifestOutputFile()
                 instantRunManifestOutputFile = processManifestTask.getInstantRunManifestOutputFile()
+//                println "norman+++： instantRunManifestOutputFile = ${instantRunManifestOutputFile} "
             } catch (Exception e) {
-                manifestOutputFile = new File(processManifestTask.getManifestOutputDirectory(), "AndroidManifest.xml")
-                instantRunManifestOutputFile = new File(processManifestTask.getInstantRunManifestOutputDirectory(), "AndroidManifest.xml")
+                //  /Users/v_maqinglong/Documents/AndroidProject/MaLong/subprojects/videocapture/build/interediates/merged_manifests/debug/AndroidManifest.xml
+                manifestOutputFile = new File(processManifestTask.getManifestOutputDirectory().getAsFile().get(), "AndroidManifest.xml")
+                //  /Users/v_maqinglong/Documents/AndroidProject/MaLong/subprojects/videocapture/bild/intermediates/instant_app_manifest/debug/AndroidManifest.xml
+                instantRunManifestOutputFile = new File(processManifestTask.getInstantAppManifestOutputDirectory().getAsFile().get(), "AndroidManifest.xml")
             }
 
             if (manifestOutputFile == null && instantRunManifestOutputFile == null) {
                 throw new GradleException("can't get manifest file")
             }
-
             //打印
-            println " manifestOutputFile:${manifestOutputFile} ${manifestOutputFile.exists()}"
-            println " instantRunManifestOutputFile:${instantRunManifestOutputFile} ${instantRunManifestOutputFile.exists()}"
+//            println " manifestOutputFile:${manifestOutputFile} ${manifestOutputFile.exists()}"
+//            println " instantRunManifestOutputFile:${instantRunManifestOutputFile} ${instantRunManifestOutputFile.exists()}"
 
             //先设置为正常的manifest
             result = manifestOutputFile
@@ -101,11 +108,9 @@ public class ManifestAPI {
                 println ' AndroidManifest.xml not exist'
             }
             //输出路径
-            println " AndroidManifest.xml 路径：$result"
-
+            //  /Users/v_maqinglong/Documents/AndroidProject/MaLong/subprojects/videocapture/build/ermediates/merged_manifests/debug/AndroidManifest.xml
             return result.absolutePath
         }
-
         return ""
     }
 }

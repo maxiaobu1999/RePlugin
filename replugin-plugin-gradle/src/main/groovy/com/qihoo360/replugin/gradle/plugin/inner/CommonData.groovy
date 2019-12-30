@@ -18,6 +18,7 @@
 package com.qihoo360.replugin.gradle.plugin.inner
 
 /**
+ * 实体类
  * @author RePlugin Team
  */
 public class CommonData {

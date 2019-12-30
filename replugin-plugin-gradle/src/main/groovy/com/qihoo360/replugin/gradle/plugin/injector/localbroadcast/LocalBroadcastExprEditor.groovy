@@ -22,6 +22,7 @@ import javassist.expr.ExprEditor
 import javassist.expr.MethodCall
 
 /**
+ * 替换几个广播相关方法表达式的实现类
  * @author RePlugin Team
  */
 public class LocalBroadcastExprEditor extends ExprEditor {

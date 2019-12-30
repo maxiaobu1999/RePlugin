@@ -20,6 +20,7 @@ package com.qihoo360.replugin.gradle.plugin.util
 import com.qihoo360.replugin.gradle.plugin.AppConstant
 
 /**
+ * 命令行工具类
  * @author RePlugin Team
  */
 class CmdUtil {

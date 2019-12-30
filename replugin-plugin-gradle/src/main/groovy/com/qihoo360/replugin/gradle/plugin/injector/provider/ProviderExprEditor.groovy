@@ -22,6 +22,7 @@ import javassist.expr.ExprEditor
 import javassist.expr.MethodCall
 
 /**
+ * 替换ContentResolver类的几个方法表达式
  * @author RePlugin Team
  */
 public class ProviderExprEditor extends ExprEditor {

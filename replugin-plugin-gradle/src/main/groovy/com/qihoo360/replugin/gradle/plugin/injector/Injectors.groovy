@@ -24,6 +24,7 @@ import com.qihoo360.replugin.gradle.plugin.injector.provider.ProviderInjector2
 import com.qihoo360.replugin.gradle.plugin.injector.loaderactivity.LoaderActivityInjector
 
 /**
+ * 注入器枚举类，定义了全部注入器
  * @author RePlugin Team
  */
 public enum Injectors {

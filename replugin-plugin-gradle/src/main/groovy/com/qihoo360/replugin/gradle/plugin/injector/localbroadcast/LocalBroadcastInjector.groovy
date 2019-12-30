@@ -25,6 +25,8 @@ import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
 
 /**
+ *  广播代码注入器
+ *  替换插件中的LocalBroadcastManager调用代码 为 插件库的调用代码
  * LocalBroadcastInjector
  *
  * 将插件中的 LocalBroadcast 调用转发到宿主

@@ -17,12 +17,17 @@
 
 package com.qihoo360.replugin.gradle.plugin.debugger
 
-import com.qihoo360.replugin.gradle.compat.ScopeCompat
+import com.qihoo360.replugin.gradle.plugin.compat.ScopeCompat
 import com.qihoo360.replugin.gradle.plugin.AppConstant
 import com.qihoo360.replugin.gradle.plugin.util.CmdUtil
 import org.gradle.api.Project
 
 /**
+ * 用于插件调试的gradle task实现
+ * <p>
+ *  初始化PluginDebugger类实例，主要配置了最终生成的插件应用的文件路径，以及adb文件的路径，是为了后续基于adb命令做push apk到SD卡上做准备。
+ *  <p>
+ *      基于adb shell + am 命令，实现 发送广播，push apk 等功能。
  * @author RePlugin Team
  */
 class PluginDebugger {
@@ -30,7 +35,13 @@ class PluginDebugger {
     def project
     def config
     def variant
+    /** 最终生成的插件应用的文件路径
+     * apkFile = /Users/v_maqinglong/Documents/AndroidProject/MaLong/subprojects/videocapture/build/outputs/apk/videocapture-debug.apk
+     */
     File apkFile
+    /** adb文件的路径
+     * adbFile = /Users/v_maqinglong/Library/Android/sdk/platform-tools/adb
+     */
     File adbFile
 
     public PluginDebugger(Project project, def config, def variant) {
@@ -41,23 +52,32 @@ class PluginDebugger {
         def scope = variantData.scope
         def globalScope = scope.globalScope
         def variantConfiguration = variantData.variantConfiguration
+        // archivesBaseName = videocapture
         String archivesBaseName = globalScope.getArchivesBaseName();
+        // apkBaseName = videocapture-debug
         String apkBaseName = archivesBaseName + "-" + variantConfiguration.getBaseName()
 
+        // apkDir = /Users/v_maqinglong/Documents/AndroidProject/MaLong/subprojects/videocapture/build/outputs/apk
         File apkDir = new File(globalScope.getBuildDir(), "outputs" + File.separator + "apk")
 
         String unsigned = (variantConfiguration.getSigningConfig() == null
                 ? "-unsigned.apk"
-                : ".apk");
+                : ".apk")
+        // apkName = videocapture-debug.apk
         String apkName = apkBaseName + unsigned
 
+        // apkFile = /Users/v_maqinglong/Documents/AndroidProject/MaLong/subprojects/videocapture/build/outputs/apk/videocapture-debug.apk
         apkFile = new File(apkDir, apkName)
 
         if (!apkFile.exists() || apkFile.length() == 0) {
+            // 会走，适配studio3。0
+            // apkFile = /Users/v_maqinglong/Documents/AndroidProject/MaLong/subprojects/videocapture/build/outputs/apk/debug/videocapture-debug.apk
             apkFile = new File(apkDir, variantConfiguration.getBaseName() + File.separator + apkName)
         }
 
+        //  adbFile = /Users/v_maqinglong/Library/Android/sdk/platform-tools/adb
         adbFile = ScopeCompat.getAdbExecutable(globalScope)
+//        println "norman+++ adbFile = ${adbFile} "
 
     }
 
@@ -130,6 +150,8 @@ class PluginDebugger {
 
     /**
      * 启动宿主app
+     * <p>
+     *     基于adb shell + am 命令，实现 发送广播，push apk 等功能。
      * @return 是否命令执行成功
      */
     public boolean startHostApp() {

@@ -21,6 +21,7 @@ import javassist.ClassPool
 import org.gradle.api.Project
 
 /**
+ * 注入器接口类
  * @author RePlugin Team
  */
 interface IClassInjector {
