@@ -28,6 +28,7 @@ import org.gradle.api.Project
 import org.gradle.api.logging.LogLevel
 
 /**
+ * 针对宿主的特定构建任务创建及调度
  * @author RePlugin Team
  */
 public class Replugin implements Plugin<Project> {
@@ -38,18 +39,32 @@ public class Replugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
-        println "${TAG} Welcome to replugin world ! "
+        println '------------------------'
+        println "${TAG} RePlugin host 插件开始执行 "
+        println '------------------------'
 
         this.project = project
 
-        /* Extensions */
+        // 若是Android 项目，配置config方法中唯一
+        // 向Plugin传递参数，将RepluginConfig类的常量配置信息赋值给AppConstant.USER_CONFIG，
+        // 在接下来checkUserConfig(config)检查配置信息时有用到,主要检查配置信息数据类型是否正确。
         project.extensions.create(AppConstant.USER_CONFIG, RepluginConfig)
 
+        // 判断project中是否含有AppPlugin类型插件，即是否有'application' projects类型的Gradle plugin。
+        // 我们在宿主项目中是应用了该类型插件的：apply plugin: 'com.android.application'.
+        // 如果希望判断是否有libraryPlugin,可以这样写：if (project.plugins.hasPlugin(LibraryPlugin))，
+        // it's for 'library' projects.
         if (project.plugins.hasPlugin(AppPlugin)) {
-
+            /*  获取project中的AppExtension类型extension，即com.android.application projects的
+            android extension.也就是在你的app模块的build.gradle中定义的闭包：
+            android {    ...   }*/
             def android = project.extensions.getByType(AppExtension)
+            // 遍历android extension的Application variants 列表。这里说下，这可以说是 Hook Android gradle
+            // 插件的一种方式，因为通过遍历applicationVariants，你可以修改属性，名字，描述，输出文件名等，
+            // 如果是Android library库，那么就将applicationVariants替换为libraryVariants。
             android.applicationVariants.all { variant ->
 
+                // 添加 【查看所有插件信息】 任务
                 addShowPluginTask(variant)
 
                 if (config == null) {
@@ -58,32 +73,36 @@ public class Replugin implements Plugin<Project> {
                 }
 
                 def generateBuildConfigTask = VariantCompat.getGenerateBuildConfigTask(variant)
+                // com.norman.malong
                 def appID = generateBuildConfigTask.appPackageName
+
+                // countTask=2
                 def newManifest = ComponentsGenerator.generateComponent(appID, config)
-                println "${TAG} countTask=${config.countTask}"
+//                println "${TAG} countTask=${config.countTask}"
 
-                def variantData = variant.variantData
-                def scope = variantData.scope
+                def variantData = variant.variantData //【ApkVariantData】
+                def scope = variantData.scope //【VariantScopeImpl】
 
-                //host generate task
+                // 生成RePluginHostConfig.java配置文件的task
+                // task名称：generateHostConfigTaskName = rpGenerateDebugHostConfig
                 def generateHostConfigTaskName = scope.getTaskName(AppConstant.TASK_GENERATE, "HostConfig")
-                def generateHostConfigTask = project.task(generateHostConfigTaskName)
-
+//                println "norman+++ generateHostConfigTaskName = ${generateHostConfigTaskName} "
+                def generateHostConfigTask = project.task(generateHostConfigTaskName) // 创建Task
+                // task名称：行为
                 generateHostConfigTask.doLast {
                     FileCreators.createHostConfig(project, variant, config)
                 }
                 generateHostConfigTask.group = AppConstant.TASKS_GROUP
-
                 //depends on build config task
                 if (generateBuildConfigTask) {
                     generateHostConfigTask.dependsOn generateBuildConfigTask
                     generateBuildConfigTask.finalizedBy generateHostConfigTask
                 }
 
-                //json generate task
+                // json generate task：生成plugins-builtin.json文件
+                // generateBuiltinJsonTaskName =rpGenerateDebugBuiltinJson
                 def generateBuiltinJsonTaskName = scope.getTaskName(AppConstant.TASK_GENERATE, "BuiltinJson")
                 def generateBuiltinJsonTask = project.task(generateBuiltinJsonTaskName)
-
                 generateBuiltinJsonTask.doLast {
                     FileCreators.createBuiltinJson(project, variant, config)
                 }
@@ -98,8 +117,10 @@ public class Replugin implements Plugin<Project> {
 
                 variant.outputs.each { output ->
                     VariantCompat.getProcessManifestTask(output).doLast {
-                        println "${AppConstant.TAG} processManifest: ${it.outputs.files}"
+                        // < replugin-host-v2.3.3 > processManifest: task 'processDebugManifest' output files
+//                        println "${AppConstant.TAG} processManifest: ${it.outputs.files}"
                         it.outputs.files.each { File file ->
+                            // 处理清单文件
                             updateManifest(file, newManifest)
                         }
                     }
@@ -122,7 +143,8 @@ public class Replugin implements Plugin<Project> {
         // 除了目录和AndroidManifest.xml之外，还可能会包含manifest-merger-debug-report.txt等不相干的文件，过滤它
         if (file == null || !file.exists() || newManifest == null) return
         if (file.isDirectory()) {
-            println "${AppConstant.TAG} updateManifest: ${file}"
+            // updateManifest: /Users/v_maqinglong/Documents/AndroidProject/MaLong/app/build/intermediates/bundle_manifest/debug/processDebugManifest/bundle-manifest
+//            println "${AppConstant.TAG} updateManifest: ${file}"
             file.listFiles().each {
                 updateManifest(it, newManifest)
             }
@@ -138,24 +160,32 @@ public class Replugin implements Plugin<Project> {
         file.write(updatedContent, 'UTF-8')
     }
 
-    // 添加 【查看所有插件信息】 任务
+    /** 添加 【查看所有插件信息】 任务 */
     def addShowPluginTask(def variant) {
         def variantData = variant.variantData
         def scope = variantData.scope
+        // rpShowPluginsDebug  ||   rpShowPluginsRelease
         def showPluginsTaskName = scope.getTaskName(AppConstant.TASK_SHOW_PLUGIN, "")
+//        println "norman+++ showPluginsTaskName = ${showPluginsTaskName} "
+        //  task ':app:rpShowPluginsDebug'
         def showPluginsTask = project.task(showPluginsTaskName)
+//        println "norman+++ showPluginsTask = ${showPluginsTask} "
 
         showPluginsTask.doLast {
             IFileCreator creator = new PluginBuiltinJsonCreator(project, variant, config)
+            //  /Users/v_maqinglong/Documents/AndroidProject/MaLong/app/build/intermediates/merged_assets/debug/out
             def dir = creator.getFileDir()
+//            println "norman+++ dir = ${dir} "
 
             if (!dir.exists()) {
-                println "${AppConstant.TAG} The ${dir.absolutePath} does not exist "
-                println "${AppConstant.TAG} pluginsInfo=null"
+                println "${AppConstant.TAG} Replugin:The ${dir.absolutePath} does not exist "
+                println "${AppConstant.TAG} Replugin:pluginsInfo=null"
                 return
             }
 
+            // fileContent = [{"high":null,"frm":null,"ver":1,"low":null,"pkg":"com.norman.videocapture","path":"plugins/videocapture.jar","name":"videocapture"}]
             String fileContent = creator.getFileContent()
+//            println "norman+++ fileContent = ${fileContent} "
             if (null == fileContent) {
                 return
             }

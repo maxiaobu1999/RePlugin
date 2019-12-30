@@ -19,6 +19,7 @@ package com.qihoo360.replugin.gradle.host.creator.impl.java
 import com.qihoo360.replugin.gradle.host.creator.IFileCreator
 
 /**
+ * RePluginHostConfig.java 生成器
  * @author RePlugin Team
  */
 public class RePluginHostConfigCreator implements IFileCreator {

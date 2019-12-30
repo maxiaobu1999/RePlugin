@@ -17,6 +17,7 @@
 package com.qihoo360.replugin.gradle.host.creator;
 
 /**
+ * 文件生成器接口
  * @author RePlugin Team
  */
 public interface IFileCreator {

@@ -21,6 +21,7 @@ import com.qihoo360.replugin.gradle.host.creator.impl.java.RePluginHostConfigCre
 import com.qihoo360.replugin.gradle.host.creator.impl.json.PluginBuiltinJsonCreator
 
 /**
+ * 组装生成器
  * @author RePlugin Team
  */
 public class FileCreators {

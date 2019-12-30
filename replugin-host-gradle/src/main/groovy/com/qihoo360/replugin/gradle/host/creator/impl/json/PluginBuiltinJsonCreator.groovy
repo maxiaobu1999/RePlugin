@@ -23,25 +23,46 @@ import groovy.io.FileType
 import groovy.json.JsonOutput
 
 /**
+ * plugins-builtin.json 生成器
+ * 内容：[{"high":null,"frm":null,"ver":1,"low":null,"pkg":"com.norman.videocapture","path":"plugins/videocapture.jar","name":"videocapture"}]
  * @author RePlugin Team
  */
 public class PluginBuiltinJsonCreator implements IFileCreator {
 
+    /** apk变种*/
     def variant
+    /** RepluginConfig*/
     def config
+    /** /Users/v_maqinglong/Documents/AndroidProject/MaLong/app/build/intermediates/merged_assets/debug/out */
     File fileDir
+    /** plugins-builtin.json */
     def fileName
+    /** */
     def pluginInfos = []
 
+    /**
+     * 构造
+     * @param project Android对象
+     * @param variant apk变种
+     * @param cfg RepluginConfig
+     * @return plugins-builtin.json 生成器
+     */
     def PluginBuiltinJsonCreator(def project, def variant, def cfg) {
         this.config = cfg
         this.variant = variant
         // make sure processResources Task execute after mergeAssets Task, get real gradle task
         // 在 com.android.tools.build:gradle:3.3.2 及之前 outputDir 为 File 类型。
         // 但从 com.android.tools.build:gradle:3.4.1 开始 Google 将此类型改为 `Provider<Directory>`。
+        // out = property(interface org.gradle.api.file.Directory, fixed(class org.gradle.api.internal.file.DefaultFilePropertyFactory$FixedDirectory, /Users/v_maqinglong/Documents/AndroidProject/MaLong/app/build/intermediates/merged_assets/debug/out))
         final def out = VariantCompat.getMergeAssetsTask(variant)?.outputDir
+//        println "norman+++ out = ${out} "
+
+        //  fileDir = /Users/v_maqinglong/Documents/AndroidProject/MaLong/app/build/intermediates/merged_assets/debug/out
         fileDir = File.class.isInstance(out) ? out : out?.get()?.getAsFile()
+//        println "norman+++ fileDir = ${fileDir} "
+        // fileName = plugins-builtin.json
         fileName = config.builtInJsonFileName
+//        println "norman+++ fileName = ${fileName} "
     }
 
     @Override
@@ -67,20 +88,20 @@ public class PluginBuiltinJsonCreator implements IFileCreator {
         new File(fileDir.getAbsolutePath() + File.separator + config.pluginDir)
                 .traverse(type: FileType.FILES, nameFilter: ~/.*\${config.pluginFilePostfix}/) {
 
-            PluginInfoParser parser = null
-            try {
-                parser = new PluginInfoParser(it.absoluteFile, config)
-            } catch (Exception e) {
-                if (config.enablePluginFileIllegalStopBuild) {
-                    System.err.println "${AppConstant.TAG} the plugin(${it.absoluteFile.absolutePath}) is illegal !!!"
-                    throw new Exception(e)
-                }
-            }
+                    PluginInfoParser parser = null
+                    try {
+                        parser = new PluginInfoParser(it.absoluteFile, config)
+                    } catch (Exception e) {
+                        if (config.enablePluginFileIllegalStopBuild) {
+                            System.err.println "${AppConstant.TAG} the plugin(${it.absoluteFile.absolutePath}) is illegal !!!"
+                            throw new Exception(e)
+                        }
+                    }
 
-            if (null != parser) {
-                pluginInfos << parser.pluginInfo
-            }
-        }
+                    if (null != parser) {
+                        pluginInfos << parser.pluginInfo
+                    }
+                }
 
         //插件为0个
         if (pluginInfos.isEmpty()) {

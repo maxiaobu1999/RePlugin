@@ -19,6 +19,7 @@ package com.qihoo360.replugin.gradle.host.handlemanifest
 import groovy.xml.MarkupBuilder
 
 /**
+ * 动态生成插件化框架中需要的组件
  * @author RePlugin Team
  */
 class ComponentsGenerator {
@@ -50,6 +51,8 @@ class ComponentsGenerator {
 
     /**
      * 动态生成插件化框架中需要的组件
+     * <p>
+     * 生成组件 AndroidManifest 坑位的xml代码，最终的xml文件是在后续的task中拼装出来的
      *
      * @param applicationID 宿主的 applicationID
      * @param config 用户配置
