@@ -27,10 +27,6 @@ import java.nio.file.attribute.BasicFileAttributes
 /**
  *  广播代码注入器
  *  替换插件中的LocalBroadcastManager调用代码 为 插件库的调用代码
- * LocalBroadcastInjector
- *
- * 将插件中的 LocalBroadcast 调用转发到宿主
- *
  * @author RePlugin Team
  */
 public class LocalBroadcastInjector extends BaseInjector {
@@ -38,6 +34,7 @@ public class LocalBroadcastInjector extends BaseInjector {
     // 表达式编辑器
     def editor
 
+    /** 遍历class目录并访问到文件时，执行以下这方法。 */
     @Override
     def injectClass(ClassPool pool, String dir, Map config) {
 
@@ -72,13 +69,16 @@ public class LocalBroadcastInjector extends BaseInjector {
                     }
 
                     stream = new FileInputStream(filePath)
-                    ctCls = pool.makeClass(stream);
+                    // 创建当前类文件的CtClass实例。
+                    ctCls = pool.makeClass(stream)
 
-                    // println ctCls.name
+                    // 如果CtClass实例被冻结，则执行解冻操作。
                     if (ctCls.isFrozen()) {
                         ctCls.defrost()
                     }
 
+                    // 遍历全部方法，并执行instrument方法，逐个扫描每个方法体内每一行代码，
+                    // 并交由LocalBroadcastExprEditor的edit()处理对方法体代码的修改。
                     /* 检查方法列表 */
                     ctCls.getDeclaredMethods().each {
                         it.instrument(editor)

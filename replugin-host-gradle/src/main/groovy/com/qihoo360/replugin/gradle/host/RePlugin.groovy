@@ -23,7 +23,6 @@ import com.qihoo360.replugin.gradle.host.creator.FileCreators
 import com.qihoo360.replugin.gradle.host.creator.IFileCreator
 import com.qihoo360.replugin.gradle.host.creator.impl.json.PluginBuiltinJsonCreator
 import com.qihoo360.replugin.gradle.host.handlemanifest.ComponentsGenerator
-import com.qihoo360.replugin.gradle.plugin.AppConstant
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.logging.LogLevel
@@ -231,23 +230,23 @@ public class Replugin implements Plugin<Project> {
         doCheckConfig("countNotTranslucentSingleInstance", config.countNotTranslucentSingleInstance)
         doCheckConfig("countTask", config.countTask)
 
-        println '--------------------------------------------------------------------------'
-//        println "${TAG} appID=${appID}"
-        println "${TAG} useAppCompat=${config.useAppCompat}"
-        // println "${TAG} persistentName=${config.persistentName}"
-        println "${TAG} countProcess=${config.countProcess}"
-
-        println "${TAG} countTranslucentStandard=${config.countTranslucentStandard}"
-        println "${TAG} countTranslucentSingleTop=${config.countTranslucentSingleTop}"
-        println "${TAG} countTranslucentSingleTask=${config.countTranslucentSingleTask}"
-        println "${TAG} countTranslucentSingleInstance=${config.countTranslucentSingleInstance}"
-        println "${TAG} countNotTranslucentStandard=${config.countNotTranslucentStandard}"
-        println "${TAG} countNotTranslucentSingleTop=${config.countNotTranslucentSingleTop}"
-        println "${TAG} countNotTranslucentSingleTask=${config.countNotTranslucentSingleTask}"
-        println "${TAG} countNotTranslucentSingleInstance=${config.countNotTranslucentSingleInstance}"
-
-        println "${TAG} countTask=${config.countTask}"
-        println '--------------------------------------------------------------------------'
+//        println '--------------------------------------------------------------------------'
+////        println "${TAG} appID=${appID}"
+//        println "${TAG} useAppCompat=${config.useAppCompat}"
+//        // println "${TAG} persistentName=${config.persistentName}"
+//        println "${TAG} countProcess=${config.countProcess}"
+//
+//        println "${TAG} countTranslucentStandard=${config.countTranslucentStandard}"
+//        println "${TAG} countTranslucentSingleTop=${config.countTranslucentSingleTop}"
+//        println "${TAG} countTranslucentSingleTask=${config.countTranslucentSingleTask}"
+//        println "${TAG} countTranslucentSingleInstance=${config.countTranslucentSingleInstance}"
+//        println "${TAG} countNotTranslucentStandard=${config.countNotTranslucentStandard}"
+//        println "${TAG} countNotTranslucentSingleTop=${config.countNotTranslucentSingleTop}"
+//        println "${TAG} countNotTranslucentSingleTask=${config.countNotTranslucentSingleTask}"
+//        println "${TAG} countNotTranslucentSingleInstance=${config.countNotTranslucentSingleInstance}"
+//
+//        println "${TAG} countTask=${config.countTask}"
+//        println '--------------------------------------------------------------------------'
     }
 
     /**

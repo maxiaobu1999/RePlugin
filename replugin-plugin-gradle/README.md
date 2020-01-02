@@ -24,6 +24,7 @@ ClassPool：是一个CtClass对象的容器类。（Javassit 库API）
 .class文件：.class文件是一种存储Java字节码的二进制文件，里面包含一个Java类或者接口。
 ## 命令
  【查看所有task】./gradlew :subprojects:videocapture:task
+【发布】./gradlew clean build publish
 
 ##task
 【rpInstallPluginDebug】安装插件

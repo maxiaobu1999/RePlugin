@@ -44,7 +44,8 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
 }
 
-project.ext.RP_ARTIFACT_ID = 'replugin-plugin-lib'
+// 发布
+//project.ext.RP_ARTIFACT_ID = 'replugin-plugin-lib'
 //apply from: '../../rp-publish.gradle'
 apply plugin: 'maven-publish'
 task sourceJar(type: Jar) {

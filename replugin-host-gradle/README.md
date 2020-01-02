@@ -16,7 +16,7 @@ RePlugin Host Gradle是一个Gradle插件，由 **主程序** 负责引入。
 
 ##me
 
-【发布】./gradlew publish
+【发布】./gradlew clean build publish
 
 ##  task
 【rpGenerateDebugHostConfig】生成RePluginHostConfig.java配置文件

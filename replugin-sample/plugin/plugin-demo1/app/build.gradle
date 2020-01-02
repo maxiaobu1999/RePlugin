@@ -22,15 +22,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.0'
-
+    compileSdkVersion rootProject.ext.COMPILE_SDK_VERSION
+    buildToolsVersion = rootProject.ext.BUILD_TOOLS_VERSION
     defaultConfig {
+        applicationId "com.qihoo360.replugin.sample.demo1"
+        minSdkVersion rootProject.ext.MIN_SDK_VERSION
+        targetSdkVersion rootProject.ext.TARGET_SDK_VERSION
         versionName "1.1"
         versionCode 104
-        targetSdkVersion 21
-        applicationId "com.qihoo360.replugin.sample.demo1"
-        minSdkVersion 15
         multiDexEnabled false
     }
 
@@ -66,10 +65,11 @@ repluginPluginConfig {
 }
 
 dependencies {
-    compile "com.qihoo360.replugin:replugin-plugin-lib:${RP_VERSION}"
-    provided files('libs/fragment.jar')//这个jar就是从Support-fragment中提取出来的并非特制包目的是为了骗过编译期
-    provided files('libs/common-utils-lib-1.0.0.jar')//这个jar就是从Host的utils中编译生成的，其目的是为了骗过编译期
-    compile(name: 'plugin-library', ext: 'aar')//sample:compile aar
+    implementation "com.qihoo360.replugin:replugin-plugin-lib:${RP_VERSION}"
+    compileOnly "androidx.appcompat:appcompat:${APPCOMPAT}"
+//    provided files('libs/fragment.jar')//这个jar就是从Support-fragment中提取出来的并非特制包目的是为了骗过编译期
+    compileOnly files('libs/common-utils-lib-1.0.0.jar')//这个jar就是从Host的utils中编译生成的，其目的是为了骗过编译期
+    implementation(name: 'plugin-library', ext: 'aar')//sample:compile aar
 
 }
 

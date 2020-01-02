@@ -92,6 +92,9 @@ public class LoaderActivityInjector extends BaseInjector {
         def stream, ctCls
         try {
             stream = new FileInputStream(clsFilePath)
+            // 从文件流中加载.class文件，创建一个CtClass实例，这个实例表示.class文件
+            // 对应的类或接口。通过CtClass可以很方便的对.class文件进行自定义操作，比如添加方法，
+            // 改方法参数，添加类成员，改继承关系等。
             ctCls = pool.makeClass(stream)
 /*
              // 打印当前 Activity 的所有父类
@@ -126,9 +129,13 @@ public class LoaderActivityInjector extends BaseInjector {
                 def targetSuperClsName = loaderActivityRules.get(superCls.name)
                 CtClass targetSuperCls = pool.get(targetSuperClsName)
 
+                // 如果class被冻结，则通过defrost()解冻class，以便class重新允许被修改。
+                // 注：当CtClass 调用writeFile()、toClass()、toBytecode() 这些方法的时候，Javassist会冻结CtClass Object，将不允许对CtClass object进行修改。
                 if (ctCls.isFrozen()) {
                     ctCls.defrost()
                 }
+                // 根据初始化中设置的Activity替换规则，修改 此Activity类 的父类为 对应的插件库中的父类。例：
+                //public class MainActivity extends Activity {修改为public class MainActivity extends PluginActivity {
                 ctCls.setSuperclass(targetSuperCls)
 
                 // 修改声明的父类后，还需要方法中所有的 super 调用。
@@ -154,6 +161,8 @@ public class LoaderActivityInjector extends BaseInjector {
         } catch (Throwable t) {
             println "    [Warning]LoaderActivityInjector： --> ${t.toString()}"
         } finally {
+            // 最后调用detach()方法，把CtClass object 从ClassPool中移除，避免当加载过多的CtClass object的时候，
+            // 会造成OutOfMemory的异常。因为ClassPool是一个CtClass objects的装载容器。加载CtClass object后，默认是不释放的。
             if (ctCls != null) {
                 ctCls.detach()
             }

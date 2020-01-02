@@ -59,7 +59,7 @@ sourceSets {
 }
 
 dependencies {
-    compile 'com.android.tools.build:gradle:3.5.0'
+    compile 'com.android.tools.build:gradle:3.5.3'
     compile 'org.json:json:20160212'
     compile 'org.codehaus.groovy:groovy:2.4.7'
     compile 'com.squareup:javapoet:1.5.1'
@@ -122,7 +122,8 @@ publishing {
     }
 }
 
-project.ext.RP_ARTIFACT_ID = 'replugin-plugin-gradle'
+// 发布
+//project.ext.RP_ARTIFACT_ID = 'replugin-plugin-gradle'
 //apply from: '../rp-publish.gradle'
 publishing {
     publications {

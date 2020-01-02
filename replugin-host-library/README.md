@@ -9,4 +9,4 @@ RePlugin Host Library是一个Java工程，由 **主程序** 负责引入。
 有关RePlugin Host Library的详细描述，请访问我们的WiKi，以了解更多的内容。
 
 ##发布aar命令
- ./gradlew clean build  publish
+ 【发布】./gradlew clean build  publish

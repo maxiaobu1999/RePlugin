@@ -26,12 +26,11 @@ import java.nio.file.attribute.BasicFileAttributes
 
 /**
  * Provider之ContentResolver代码注入器
- * 替换 插件中的 ContentResolver 调用代码 为 插件库的调用代码
- * @author RePlugin Team
+ * 主要用来替换 插件中的 ContentResolver相关的方法调用 为 插件库的PluginProviderClient中的对应方法调用。
  */
 public class ProviderInjector extends BaseInjector {
 
-    // 处理以下方法
+    /** 需要处理的目标方法名 */
     public static def includeMethodCall = ['query',
                                            'getType',
                                            'insert',
@@ -51,6 +50,7 @@ public class ProviderInjector extends BaseInjector {
     // 表达式编辑器
     def editor
 
+    /** 遍历class目录并访问到文件时，执行 */
     @Override
     def injectClass(ClassPool pool, String dir, Map config) {
 
@@ -82,7 +82,7 @@ public class ProviderInjector extends BaseInjector {
                     }
 
                     stream = new FileInputStream(filePath)
-                    ctCls = pool.makeClass(stream);
+                    ctCls = pool.makeClass(stream)
 
                     // println ctCls.name
                     if (ctCls.isFrozen()) {
@@ -91,6 +91,7 @@ public class ProviderInjector extends BaseInjector {
 
                     editor.filePath = filePath
 
+                    // 逐个扫描每个方法体内每一行代码，并交由ProviderExprEditor的edit()处理对方法体代码的修改。
                     (ctCls.getDeclaredMethods() + ctCls.getMethods()).each {
                         it.instrument(editor)
                     }
