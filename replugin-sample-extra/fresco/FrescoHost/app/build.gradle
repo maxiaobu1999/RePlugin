@@ -1,13 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.2"
-
+    compileSdkVersion rootProject.ext.COMPILE_SDK_VERSION
+    buildToolsVersion = rootProject.ext.BUILD_TOOLS_VERSION
     defaultConfig {
         applicationId "com.qihoo360.replugin.fresco.host"
-        minSdkVersion 14
-        targetSdkVersion 26
+        minSdkVersion rootProject.ext.MIN_SDK_VERSION
+        targetSdkVersion rootProject.ext.TARGET_SDK_VERSION
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -45,16 +44,11 @@ repluginHostConfig {
 }
 
 dependencies {
-    compile "com.qihoo360.replugin:replugin-host-lib:${RP_VERSION}"
-
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-
-    compile 'com.android.support:appcompat-v7:26.0.0-alpha1'
-    testCompile 'junit:junit:4.12'
-
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation "junit:junit:${JUNIT}"
+    androidTestImplementation "androidx.test.espresso:espresso-core:${ESPRESSO_CORE}"
+    implementation "com.qihoo360.replugin:replugin-host-lib:${RP_VERSION}"
+    implementation "androidx.appcompat:appcompat:${APPCOMPAT}"
     // fresco依赖bolts-android
-    compile "com.parse.bolts:bolts-android:1.4.0"
+    implementation "com.parse.bolts:bolts-android:1.4.0"
 }

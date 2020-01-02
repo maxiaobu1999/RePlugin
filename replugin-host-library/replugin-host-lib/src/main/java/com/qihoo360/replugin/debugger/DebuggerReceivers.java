@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.qihoo360.replugin.RePlugin;
 import com.qihoo360.replugin.helper.LogDebug;
@@ -81,7 +82,6 @@ public class DebuggerReceivers {
      * @return 是否注册成功
      */
     public boolean registerReceivers(Context context) {
-
         if (sDebugerReceiver != null) {
             return true;
         }

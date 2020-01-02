@@ -25,8 +25,8 @@ import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
 
 /**
- * GetIdentifier 方法注入器
  * 替换 插件中的 Resource.getIdentifier 调用代码的参数 为 动态适配的参数
+ * 资源id前面加上插件包名
  * @author RePlugin Team
  */
 public class GetIdentifierInjector extends BaseInjector {
@@ -56,13 +56,15 @@ public class GetIdentifierInjector extends BaseInjector {
                 def stream, ctCls
                 try {
                     stream = new FileInputStream(filePath)
-                    ctCls = pool.makeClass(stream);
+                    ctCls = pool.makeClass(stream)
 
                     // println ctCls.name
                     if (ctCls.isFrozen()) {
                         ctCls.defrost()
                     }
 
+                    // 遍历全部方法，并执行instrument方法，逐个扫描每个方法体内每一行代码，
+                    // 并交由 GetIdentifierExprEditor 的edit()处理对方法体代码的修改。
                     ctCls.getDeclaredMethods().each {
                         it.instrument(editor)
                     }

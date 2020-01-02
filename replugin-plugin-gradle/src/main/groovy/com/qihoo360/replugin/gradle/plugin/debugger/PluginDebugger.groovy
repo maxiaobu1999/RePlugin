@@ -92,21 +92,27 @@ class PluginDebugger {
         }
 
         //推送apk文件到手机
+        //  pushCmd = /Users/v_maqinglong/Library/Android/sdk/platform-tools/adb push /Users/v_maqinglong/Documents/AndroidProject/MaLong/subprojects/videocapture/build/outputs/apk/debug/videocapture-debug.apk /sdcard/
         String pushCmd = "${adbFile.absolutePath} push ${apkFile.absolutePath} ${config.phoneStorageDir}"
+        println "norman+++ pushCmd = ${pushCmd} "
         if (0 != CmdUtil.syncExecute(pushCmd)) {
             return false
         }
 
         //此处是在安卓机上的目录，直接"/"路径
+        // apkPath = /sdcard/
         String apkPath = "${config.phoneStorageDir}"
         if (!apkPath.endsWith("/")) {
             //容错处理
             apkPath += "/"
         }
+        // apkPath = /sdcard/videocapture-debug.apk
         apkPath += "${apkFile.name}"
 
         //发送安装广播
+        //installBrCmd=  /Users/v_maqinglong/Library/Android/sdk/platform-tools/adb shell am broadcast -a com.norman.malong.replugin.install -e path /sdcard/videocapture-debug.apk -e immediately true
         String installBrCmd = "${adbFile.absolutePath} shell am broadcast -a ${config.hostApplicationId}.replugin.install -e path ${apkPath} -e immediately true "
+        println "norman+++ installBrCmd = ${installBrCmd} "
         if (0 != CmdUtil.syncExecute(installBrCmd)) {
             return false
         }
@@ -124,6 +130,7 @@ class PluginDebugger {
             return false
         }
 
+        // /Users/v_maqinglong/Library/Android/sdk/platform-tools/adb shell am broadcast -a com.norman.malong.replugin.uninstall -e plugin videocapture
         String cmd = "${adbFile.absolutePath} shell am broadcast -a ${config.hostApplicationId}.replugin.uninstall -e plugin ${config.pluginName}"
         if (0 != CmdUtil.syncExecute(cmd)) {
             return false
@@ -141,6 +148,7 @@ class PluginDebugger {
             return false
         }
 
+        // cmd:forceStopHostApp = /Users/v_maqinglong/Library/Android/sdk/platform-tools/adb shell am force-stop com.norman.malong
         String cmd = "${adbFile.absolutePath} shell am force-stop ${config.hostApplicationId}"
         if (0 != CmdUtil.syncExecute(cmd)) {
             return false
@@ -160,7 +168,9 @@ class PluginDebugger {
             return false
         }
 
+        //  cmd = /Users/v_maqinglong/Library/Android/sdk/platform-tools/adb shell am start -n "com.norman.malong/com.norman.malong.SplashActivity" -a android.intent.action.MAIN -c android.intent.category.LAUNCHER
         String cmd = "${adbFile.absolutePath} shell am start -n \"${config.hostApplicationId}/${config.hostAppLauncherActivity}\" -a android.intent.action.MAIN -c android.intent.category.LAUNCHER"
+
         if (0 != CmdUtil.syncExecute(cmd)) {
             return false
         }
@@ -178,6 +188,7 @@ class PluginDebugger {
         }
 
         String installBrCmd = "${adbFile.absolutePath} shell am broadcast -a ${config.hostApplicationId}.replugin.start_activity -e plugin ${config.pluginName}"
+        println "norman+++ installBrCmd = ${installBrCmd} "
         if (0 != CmdUtil.syncExecute(installBrCmd)) {
             return false
         }

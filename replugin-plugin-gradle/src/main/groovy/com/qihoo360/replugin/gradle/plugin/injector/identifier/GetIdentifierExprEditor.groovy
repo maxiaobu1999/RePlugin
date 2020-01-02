@@ -35,6 +35,9 @@ public class GetIdentifierExprEditor extends ExprEditor {
         String clsName = m.getClassName()
         String methodName = m.getMethodName()
 
+        // 1）调用原型： int id = res.getIdentifier("com.qihoo360.replugin.sample.demo2:layout/from_demo1", null, null);
+        //2）replace statement：'{ $3 = \"' + CommonData.appPackage + '\"; ' +'$_ = $proceed($$);' + ' }'，
+        // 为特殊变量$3赋值，即动态修改参数3的值为插件的包名；'$_ = $proceed($$);'表示按原样调用。
         if (clsName.equalsIgnoreCase('android.content.res.Resources')) {
             if (methodName == 'getIdentifier') {
                 m.replace('{ $3 = \"' + CommonData.appPackage + '\"; ' +

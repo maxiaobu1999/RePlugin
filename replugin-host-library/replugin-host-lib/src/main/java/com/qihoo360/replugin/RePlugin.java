@@ -924,7 +924,7 @@ public class RePlugin {
          * 使用插件框架默认的方案
          *
          * @param app Application对象
-         * @see Application#attachBaseContext(Context)
+         * @see Application# attachBaseContext(Context)
          */
         public static void attachBaseContext(Application app) {
             attachBaseContext(app, new RePluginConfig());
@@ -937,7 +937,7 @@ public class RePlugin {
          *
          * @param app Application对象
          * @param pc  可供外界使用的回调
-         * @see Application#attachBaseContext(Context)
+         * @see Application# attachBaseContext(Context)
          * @see RePluginCallbacks
          */
         public static void attachBaseContext(Application app, RePluginCallbacks pc) {
@@ -949,7 +949,7 @@ public class RePlugin {
          * 可自定义插件框架的行为。参见RePluginConfig类的说明
          *
          * @param app Application对象
-         * @see Application#attachBaseContext(Context)
+         * @see Application# attachBaseContext(Context)
          * @see RePluginConfig
          * @since 1.2.0
          */
