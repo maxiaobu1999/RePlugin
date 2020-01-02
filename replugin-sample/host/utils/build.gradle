@@ -36,7 +36,6 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation "androidx.appcompat:appcompat:${APPCOMPAT}"
 }
 
 // 打包 common-utils-lib-1.0.0.jar
@@ -44,7 +43,9 @@ task makeJar(type: Jar, dependsOn: ['build']) {
     destinationDir = file('build/outputs/jar/')
     baseName = "common-utils-lib"
     version = "1.0.0"
-    from('build/intermediates/classes/debug')
+//    from('build/intermediates/classes/debug')
+    // studio 3.5.3路径改变
+    from('build/intermediates/javac/debug/classes/')
     exclude('**/BuildConfig.class')
     exclude('**/BuildConfig\$*.class')
     exclude('**/R.class')
