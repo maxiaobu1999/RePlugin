@@ -43,7 +43,7 @@ public class GetIdentifierExprEditor extends ExprEditor {
                 m.replace('{ $3 = \"' + CommonData.appPackage + '\"; ' +
                         '$_ = $proceed($$);' +
                         ' }')
-                println " GetIdentifierCall => ${filePath} ${methodName}():${m.lineNumber}"
+//                println " GetIdentifierCall => ${filePath} ${methodName}():${m.lineNumber}"
             }
         }
     }

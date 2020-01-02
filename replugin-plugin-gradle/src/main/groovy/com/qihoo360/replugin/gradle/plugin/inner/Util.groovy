@@ -52,7 +52,7 @@ public class Util {
         }
 
         newSection()
-        println ">>> ClassPath:"
+//        println ">>> ClassPath:"
         classpathList
     }
 
@@ -64,7 +64,7 @@ public class Util {
         def visitor = new ClassFileVisitor()
         def projectDir = project.getRootDir().absolutePath
 
-        println ">>> Unzip Jar ..."
+//        println ">>> Unzip Jar ..."
 
         inputs.each { TransformInput input ->
 
@@ -84,7 +84,7 @@ public class Util {
 
                     String jarZipDir = project.getBuildDir().path +
                             File.separator + FD_INTERMEDIATES + File.separator + "exploded-aar" +
-                            File.separator + Hashing.sha1().hashString(jarPath, Charsets.UTF_16LE).toString() + File.separator + "class";
+                            File.separator + Hashing.sha1().hashString(jarPath, Charsets.UTF_16LE).toString() + File.separator + "class"
                     if (unzip(jarPath, jarZipDir)) {
                         def jarZip = jarZipDir + ".jar"
                         includeJars << jarPath
@@ -142,12 +142,12 @@ public class Util {
     def private static boolean unzip(String zipFilePath, String dirPath) {
         // 若这个Zip包是空内容的（如引入了Bugly就会出现），则直接忽略
         if (isZipEmpty(zipFilePath)) {
-            println ">>> Zip file is empty! Ignore";
-            return false;
+            println ">>> Zip file is empty! Ignore"
+            return false
         }
 
         new AntBuilder().unzip(src: zipFilePath, dest: dirPath, overwrite: 'true')
-        return true;
+        return true
     }
 
     /**

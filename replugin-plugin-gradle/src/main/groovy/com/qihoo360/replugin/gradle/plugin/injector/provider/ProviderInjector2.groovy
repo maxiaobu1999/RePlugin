@@ -52,8 +52,8 @@ public class ProviderInjector2 extends BaseInjector {
             editor = new ProviderExprEditor2()
         }
 
-        Util.newSection()
-        println dir
+//        Util.newSection()
+//        println dir
 
         Files.walkFileTree(Paths.get(dir), new SimpleFileVisitor<Path>() {
             @Override
@@ -86,8 +86,7 @@ public class ProviderInjector2 extends BaseInjector {
 
                     ctCls.writeFile(dir)
                 } catch (Throwable t) {
-                    println "    [Warning] --> ${t.toString()}"
-                    // t.printStackTrace()
+//                    println "    [Warning]ProviderInjector2 --> ${t.toString()}"
                 } finally {
                     if (ctCls != null) {
                         ctCls.detach()

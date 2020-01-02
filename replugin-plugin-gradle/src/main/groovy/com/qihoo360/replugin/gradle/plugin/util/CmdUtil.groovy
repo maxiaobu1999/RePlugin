@@ -35,11 +35,11 @@ class CmdUtil {
         int cmdReturnCode
 
         try {
-            println "${AppConstant.TAG} \$ ${cmd}"
+//            println "${AppConstant.TAG} \$ ${cmd}"
 
             Process process = cmd.execute()
             process.inputStream.eachLine {
-                println "${AppConstant.TAG} - ${it}"
+//                println "${AppConstant.TAG} - ${it}"
             }
             process.waitFor()
 

@@ -41,8 +41,8 @@ public class GetIdentifierInjector extends BaseInjector {
             editor = new GetIdentifierExprEditor()
         }
 
-        Util.newSection()
-        println dir
+//        Util.newSection()
+//        println dir
 
         Files.walkFileTree(Paths.get(dir), new SimpleFileVisitor<Path>() {
             @Override
@@ -75,7 +75,7 @@ public class GetIdentifierInjector extends BaseInjector {
 
                     ctCls.writeFile(dir)
                 } catch (Throwable t) {
-                    println "    [Warning] --> ${t.toString()}"
+//                    println "    [Warning] GetIdentifierInjector --> ${t.toString()}"
                 } finally {
                     if (ctCls != null) {
                         ctCls.detach()

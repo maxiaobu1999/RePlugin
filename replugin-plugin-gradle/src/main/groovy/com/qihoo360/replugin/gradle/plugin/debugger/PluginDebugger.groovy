@@ -94,7 +94,7 @@ class PluginDebugger {
         //推送apk文件到手机
         //  pushCmd = /Users/v_maqinglong/Library/Android/sdk/platform-tools/adb push /Users/v_maqinglong/Documents/AndroidProject/MaLong/subprojects/videocapture/build/outputs/apk/debug/videocapture-debug.apk /sdcard/
         String pushCmd = "${adbFile.absolutePath} push ${apkFile.absolutePath} ${config.phoneStorageDir}"
-        println "norman+++ pushCmd = ${pushCmd} "
+//        println "norman+++ pushCmd = ${pushCmd} "
         if (0 != CmdUtil.syncExecute(pushCmd)) {
             return false
         }
@@ -112,7 +112,7 @@ class PluginDebugger {
         //发送安装广播
         //installBrCmd=  /Users/v_maqinglong/Library/Android/sdk/platform-tools/adb shell am broadcast -a com.norman.malong.replugin.install -e path /sdcard/videocapture-debug.apk -e immediately true
         String installBrCmd = "${adbFile.absolutePath} shell am broadcast -a ${config.hostApplicationId}.replugin.install -e path ${apkPath} -e immediately true "
-        println "norman+++ installBrCmd = ${installBrCmd} "
+//        println "norman+++ installBrCmd = ${installBrCmd} "
         if (0 != CmdUtil.syncExecute(installBrCmd)) {
             return false
         }

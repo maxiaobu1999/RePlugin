@@ -81,6 +81,6 @@ public class LocalBroadcastExprEditor extends ExprEditor {
             }
         }
 
-        println ">>> Replace: ${filePath} <line:${call.lineNumber}> ${TARGET_CLASS}.${method}() <With> ${PROXY_CLASS}.${method}()\n"
+//        println ">>> Replace: ${filePath} <line:${call.lineNumber}> ${TARGET_CLASS}.${method}() <With> ${PROXY_CLASS}.${method}()\n"
     }
 }

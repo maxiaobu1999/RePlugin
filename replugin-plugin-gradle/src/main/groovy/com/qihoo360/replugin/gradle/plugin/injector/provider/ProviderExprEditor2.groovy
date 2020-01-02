@@ -37,7 +37,7 @@ public class ProviderExprEditor2 extends ExprEditor {
         String methodName = m.getMethodName()
 
         if (clsName.equalsIgnoreCase('android.content.ContentProviderClient')) {
-            println " ${filePath} ContentProviderClient.${methodName}():${m.lineNumber}"
+//            println " ${filePath} ContentProviderClient.${methodName}():${m.lineNumber}"
             if (!(methodName in ProviderInjector2.includeMethodCall)) {
                 // println "跳过$methodName"
                 return
@@ -48,6 +48,6 @@ public class ProviderExprEditor2 extends ExprEditor {
 
     def private replaceStatement(MethodCall methodCall, String method, def line) {
         methodCall.replace('{$_ = ' + PROVIDER_CLASS + '.' + method + '(com.qihoo360.replugin.RePlugin.getPluginContext(), $$);}')
-        println ">>> Replace: ${filePath} Provider.${method}():${line}"
+//        println ">>> Replace: ${filePath} Provider.${method}():${line}"
     }
 }

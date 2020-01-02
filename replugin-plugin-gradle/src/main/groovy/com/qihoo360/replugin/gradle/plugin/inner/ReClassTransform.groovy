@@ -145,7 +145,7 @@ public class ReClassTransform extends Transform {
         Object pool = initClassPool(inputs)
 
         /* 进行注入操作 */
-        Util.newSection()
+//        Util.newSection()
         Injectors.values().each {
             if (it.nickName in injectors) {
 //                println "norman+++ it.nickName = ${it.nickName} "
@@ -170,7 +170,7 @@ public class ReClassTransform extends Transform {
         /* 拷贝 class 和 jar 包 */
         copyResult(inputs, outputProvider)
 
-        Util.newSection()
+//        Util.newSection()
     }
 
     /**
@@ -192,8 +192,8 @@ public class ReClassTransform extends Transform {
      * 将解压的 class 文件重新打包，然后删除 class 文件
      */
     def repackage() {
-        Util.newSection()
-        println '>>> Repackage...'
+//        Util.newSection()
+//        println '>>> Repackage...'
         includeJars.each {
             File jar = new File(it)
             String JarAfterzip = map.get(jar.getParent() + File.separatorChar + jar.getName())
@@ -230,7 +230,7 @@ public class ReClassTransform extends Transform {
      * 方便后续拿到这些class文件去修改。
      */
     def initClassPool(Collection<TransformInput> inputs) {
-        Util.newSection()
+//        Util.newSection()
         def pool = new ClassPool(true)
         // 添加编译时需要引用的到类到 ClassPool, 同时记录要修改的 jar 到 includeJars
         Util.getClassPaths(project, globalScope, inputs, includeJars, map).each {

@@ -159,7 +159,7 @@ public class LoaderActivityInjector extends BaseInjector {
             }
 
         } catch (Throwable t) {
-            println "    [Warning]LoaderActivityInjector： --> ${t.toString()}"
+//            println "    [Warning]LoaderActivityInjector： --> ${t.toString()}"
         } finally {
             // 最后调用detach()方法，把CtClass object 从ClassPool中移除，避免当加载过多的CtClass object的时候，
             // 会造成OutOfMemory的异常。因为ClassPool是一个CtClass objects的装载容器。加载CtClass object后，默认是不释放的。
@@ -178,9 +178,9 @@ public class LoaderActivityInjector extends BaseInjector {
         // todo 从配置中读取，而不是写死在代码中
         if (loaderActivityRules == null) {
             def buildSrcPath = project.project(':buildsrc').projectDir.absolutePath
-            println "norman+++ buildSrcPath = ${buildSrcPath} "
+//            println "norman+++ buildSrcPath = ${buildSrcPath} "
             def loaderConfigPath = String.join(File.separator, buildSrcPath, 'res', LOADER_PROP_FILE)
-            println "norman+++ loaderConfigPath = ${loaderConfigPath} "
+//            println "norman+++ loaderConfigPath = ${loaderConfigPath} "
 
             loaderActivityRules = new Properties()
             new File(loaderConfigPath).withInputStream {
@@ -190,9 +190,8 @@ public class LoaderActivityInjector extends BaseInjector {
 //            println '\n>>> Activity Rules：'
             loaderActivityRules.each {
                 // it = /Users/v_maqinglong/Documents/AndroidProject/MaLong/subprojects/videocapture/build/intermediates/exploded-aar/a2f80ac814910200306870f5a6dfbb0807926f9c/class
-                println "norman+++ it2 = ${it} "
+//                println "norman+++ it2 = ${it} "
             }
-            println()
         }
     }
 }

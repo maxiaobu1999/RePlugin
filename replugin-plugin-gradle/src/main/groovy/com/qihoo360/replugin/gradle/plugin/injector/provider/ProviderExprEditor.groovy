@@ -44,7 +44,7 @@ public class ProviderExprEditor extends ExprEditor {
         try {
             replaceStatement(m, methodName, m.lineNumber)
         } catch (Exception e) { //确保不影响其他 MethodCall
-            println "    [Warning] --> ProviderExprEditor : ${e.toString()}"
+//            println "    [Warning] ProviderExprEditor -->  : ${e.toString()}"
         }
     }
 
@@ -54,6 +54,6 @@ public class ProviderExprEditor extends ExprEditor {
         } else {
             methodCall.replace('{$_ = ' + PROVIDER_CLASS + '.' + method + '(com.qihoo360.replugin.RePlugin.getPluginContext(), $$);}')
         }
-        println ">>> Replace: ${filePath} Provider.${method}():${line}"
+//        println ">>> Replace: ${filePath} Provider.${method}():${line}"
     }
 }

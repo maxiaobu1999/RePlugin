@@ -50,8 +50,8 @@ public class LocalBroadcastInjector extends BaseInjector {
             editor = new LocalBroadcastExprEditor()
         }
 
-        Util.newSection()
-        println dir
+//        Util.newSection()
+//        println dir
 
         Files.walkFileTree(Paths.get(dir), new SimpleFileVisitor<Path>() {
             @Override
@@ -78,7 +78,7 @@ public class LocalBroadcastInjector extends BaseInjector {
                     }
 
                     // 遍历全部方法，并执行instrument方法，逐个扫描每个方法体内每一行代码，
-                    // 并交由LocalBroadcastExprEditor的edit()处理对方法体代码的修改。
+                    // 并交由 LocalBroadcastExprEditor 的edit()处理对方法体代码的修改。
                     /* 检查方法列表 */
                     ctCls.getDeclaredMethods().each {
                         it.instrument(editor)
@@ -90,7 +90,7 @@ public class LocalBroadcastInjector extends BaseInjector {
 
                     ctCls.writeFile(dir)
                 } catch (Throwable t) {
-                    println "    [Warning] --> ${t.toString()}"
+//                    println "    [Warning] LocalBroadcastInjector --> ${t.toString()}"
                     // t.printStackTrace()
                 } finally {
                     if (ctCls != null) {
