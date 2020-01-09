@@ -41,7 +41,8 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    compileOnly 'androidx.appcompat:appcompat:1.1.0'
+    compileOnly "androidx.appcompat:appcompat:${APPCOMPAT_VERSION}"
+
 }
 
 // 发布
