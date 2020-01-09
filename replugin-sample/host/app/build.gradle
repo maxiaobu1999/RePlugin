@@ -44,7 +44,7 @@ repluginHostConfig {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation "androidx.appcompat:appcompat:${APPCOMPAT}"
+    implementation "androidx.appcompat:appcompat:${APPCOMPAT_VERSION}"
     implementation "androidx.legacy:legacy-support-v4:${LEGACY_SUPPORT_V4}"
     implementation "com.qihoo360.replugin:replugin-host-lib:${RP_VERSION}"
 }
