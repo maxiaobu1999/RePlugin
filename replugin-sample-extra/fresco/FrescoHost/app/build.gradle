@@ -48,7 +48,7 @@ dependencies {
     testImplementation "junit:junit:${JUNIT}"
     androidTestImplementation "androidx.test.espresso:espresso-core:${ESPRESSO_CORE}"
     implementation "com.qihoo360.replugin:replugin-host-lib:${RP_VERSION}"
-    implementation "androidx.appcompat:appcompat:${APPCOMPAT}"
+    implementation "androidx.appcompat:appcompat:${APPCOMPAT_VERSION}"
     // fresco依赖bolts-android
     implementation "com.parse.bolts:bolts-android:1.4.0"
 }
